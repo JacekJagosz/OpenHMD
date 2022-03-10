@@ -340,13 +340,18 @@ typedef struct {
 static int is_nolo_device(struct hid_device_info* device)
 {
 	if (!ohmd_wstring_match(device->manufacturer_string, L"LYRobotix")) {
+		if (!ohmd_wstring_match(device->manufacturer_string, L"GigaDevice")) {
 		return 0;
+		}
 	}
 	if (ohmd_wstring_match(device->product_string, L"NOLO")) { //Old Firmware
 		LOGE("Detected firmware <2.0, for the best result please upgrade your NOLO firmware above 2.0");
 		return 1;
 	}
 	if (ohmd_wstring_match(device->product_string, L"NOLO HMD")) { //New Firmware
+		return 2;
+	}
+	if (ohmd_wstring_match(device->product_string, L"CV1_PRO_HEAD")) { //Pro
 		return 2;
 	}
 
@@ -356,12 +361,13 @@ static int is_nolo_device(struct hid_device_info* device)
 static void get_device_list(ohmd_driver* driver, ohmd_device_list* list)
 {
 	// enumerate HID devices and add any NOLO's found to the device list
-	nolo_verions rd[2] = {
+	nolo_verions rd[3] = {
 		{ "NOLO CV1 (Kickstarter)", 0x0483, 0x5750},
-		{ "NOLO CV1 (Production)", 0x28e9, 0x028a}
+		{ "NOLO CV1 (Production)", 0x28e9, 0x028a},
+		{ "NOLO CV1 Pro", 0x28e9, 0x0302}
 	};
 
-	for(int i = 0; i < 2; i++) {
+	for(int i = 0; i < 3; i++) {
 		struct hid_device_info* devs = hid_enumerate(rd[i].vendor, rd[i].product);
 		struct hid_device_info* cur_dev = devs;
 
