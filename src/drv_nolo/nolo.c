@@ -388,6 +388,7 @@ static void get_device_list(ohmd_driver* driver, ohmd_device_list* list)
 
 			desc->driver_ptr = driver;
 			desc->id = id++;
+			if(i=2) cur_dev = cur_dev->next; //CV1 Pro splits devices into 3
 
 			//Controller 0
 			desc = &list->devices[list->num_devices++];
@@ -407,6 +408,7 @@ static void get_device_list(ohmd_driver* driver, ohmd_device_list* list)
 
 			desc->driver_ptr = driver;
 			desc->id = id++;
+			if(i=2) cur_dev = cur_dev->next; //CV1 Pro splits devices into 3
 
 			// Controller 1
 			desc = &list->devices[list->num_devices++];
