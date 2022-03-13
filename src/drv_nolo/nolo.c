@@ -135,6 +135,14 @@ static void update_device(ohmd_device* device)
 				handle_tracker_sensor_msg(priv, buffer, size, 0);
 				break;
 			}
+			case 105:
+			{
+				if (controller0)
+					handle_tracker_sensor_msg(controller0, buffer, size, 1);
+
+				handle_tracker_sensor_msg(priv, buffer, size, 0);
+				break;
+			}
 			default:
 				LOGE("unknown message type: %u", buffer[0]);
 		}
