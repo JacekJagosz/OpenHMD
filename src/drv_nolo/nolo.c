@@ -383,7 +383,10 @@ static void get_device_list(ohmd_driver* driver, ohmd_device_list* list)
 			ohmd_device_desc* desc = &list->devices[list->num_devices++];
 
 			strcpy(desc->driver, "OpenHMD NOLO VR CV1 driver");
-			strcpy(desc->vendor, "LYRobotix");
+			if (ohmd_wstring_match(cur_dev->manufacturer_string, L"LYRobotix"))
+				strcpy(desc->vendor, "LYRobotix");
+			else if (ohmd_wstring_match(cur_dev->manufacturer_string, L"GigaDevice"))
+				strcpy(desc->vendor, "GigaDevice");
 			strcpy(desc->product, rd[i].name);
 
 			desc->revision = is_nolo_device(cur_dev);
@@ -401,7 +404,10 @@ static void get_device_list(ohmd_driver* driver, ohmd_device_list* list)
 			desc = &list->devices[list->num_devices++];
 
 			strcpy(desc->driver, "OpenHMD NOLO VR CV1 driver");
-			strcpy(desc->vendor, "LYRobotix");
+			if (ohmd_wstring_match(cur_dev->manufacturer_string, L"LYRobotix"))
+				strcpy(desc->vendor, "LYRobotix");
+			else if (ohmd_wstring_match(cur_dev->manufacturer_string, L"GigaDevice"))
+				strcpy(desc->vendor, "GigaDevice");
 			strcpy(desc->product, "NOLO CV1: Controller 0");
 
 			strcpy(desc->path, cur_dev->path);
@@ -421,7 +427,10 @@ static void get_device_list(ohmd_driver* driver, ohmd_device_list* list)
 			desc = &list->devices[list->num_devices++];
 
 			strcpy(desc->driver, "OpenHMD NOLO VR CV1 driver");
-			strcpy(desc->vendor, "LYRobotix");
+			if (ohmd_wstring_match(cur_dev->manufacturer_string, L"LYRobotix"))
+				strcpy(desc->vendor, "LYRobotix");
+			else if (ohmd_wstring_match(cur_dev->manufacturer_string, L"GigaDevice"))
+				strcpy(desc->vendor, "GigaDevice");
 			strcpy(desc->product, "NOLO CV1: Controller 1");
 
 			strcpy(desc->path, cur_dev->path);
