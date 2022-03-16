@@ -72,6 +72,7 @@ static void update_device(ohmd_device* device)
 	drv_priv* priv = drv_priv_get(device);
 	unsigned char buffer[FEATURE_BUFFER_SIZE];
 
+	LOGI("Updating id %d", priv->id);
 	// Only update when physical device
 	if (priv->id != 0)
 		return;
@@ -104,6 +105,8 @@ static void update_device(ohmd_device* device)
 		}
 
 		nolo_decrypt_data(buffer);
+
+		LOGE("nolo buffer[0] %d", buffer[0]);
 
 		// currently the only message type the hardware supports
 		switch (buffer[0]) {
@@ -330,6 +333,8 @@ static ohmd_device* open_device(ohmd_driver* driver, ohmd_device_desc* desc)
 
 	ofusion_init(&priv->sensor_fusion);
 
+	LOGI("Opened %s with id %d", desc->product, priv->id);
+
 	return &priv->base;
 
 cleanup:
@@ -351,6 +356,9 @@ static int is_nolo_device(struct hid_device_info* device)
 	    !ohmd_wstring_match(device->manufacturer_string, L"GigaDevice")) {
 		return 0;
 	}
+
+	LOGD("Nolo product string %S", device->product_string);
+
 	if (ohmd_wstring_match(device->product_string, L"NOLO")) { //Old Firmware
 		LOGE("Detected firmware <2.0, for the best result please upgrade your NOLO firmware above 2.0");
 		return 1;
