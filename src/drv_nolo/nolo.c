@@ -74,7 +74,7 @@ static void update_device(ohmd_device* device)
 
 	LOGI("Updating id %d", priv->id);
 	// Only update when physical device
-	if (priv->id != 0)
+	if (priv->id > 2)
 		return;
 
 	devices_t* current = nolo_devices;
@@ -92,6 +92,7 @@ static void update_device(ohmd_device* device)
 			break;
 		}
 		current = current->next;
+		LOGI("Do controllers exist? 0:%d, 1:%d", controller0!=0, controller1!=0);
 	}
 
 	// Read all the messages from the device.
@@ -104,9 +105,26 @@ static void update_device(ohmd_device* device)
 			return; // No more messages, return.
 		}
 
+		LOGI("sensor msg");
+		for (int i = 0; i < size; i++) {
+			printf("%02X ", buffer[i]);
+		}
+		printf("\n");
+		/*for(int i=0; i<FEATURE_BUFFER_SIZE; i+=2){
+			printf("%i\n", (*(buffer+i) | (*(buffer +i + 1) << 8))); //taken from read16 function
+		}*/
 		nolo_decrypt_data(buffer);
 
 		LOGE("nolo buffer[0] %d", buffer[0]);
+		//printf("%.*s\n", FEATURE_BUFFER_SIZE, buffer);
+		LOGI("decrypted sensor msg");
+		for (int i = 0; i < size; i++) {
+			printf("%02X ", buffer[i]);
+		}
+		printf("\n");
+		/*for(int i=0; i<FEATURE_BUFFER_SIZE; i+=2){
+			printf("%i\n", (*(buffer+i) | (*(buffer +i + 1) << 8))); //taken from read16 function
+		}*/
 
 		// currently the only message type the hardware supports
 		switch (buffer[0]) {
@@ -140,10 +158,13 @@ static void update_device(ohmd_device* device)
 			}
 			case 105:
 			{
-				if (controller0)
-					handle_tracker_sensor_msg(controller0, buffer, size, 1);
-
+				/*if (controller0)
+					handle_tracker_sensor_msg(controller0, buffer, size, 1);*/
+				LOGI("Is there controller0? %d", controller0);//there isn't for some reason
 				handle_tracker_sensor_msg(priv, buffer, size, 0);
+				//nolo_decode_hmd_marker(priv, buffer+0x15);  //This cause only the position vect to show data
+				//nolo_decode_base_station(priv, buffer+0x36);//The rotation vect was all zeroes
+
 				break;
 			}
 			default:
@@ -367,7 +388,7 @@ static int is_nolo_device(struct hid_device_info* device)
 		return 2;
 	}
 	if (ohmd_wstring_match(device->product_string, L"CV1_PRO_HEAD")) { //Pro
-		return 2;
+		return 3;
 	}
 
 	return 0;
